@@ -105,6 +105,7 @@ COAP_STATIC_INLINE void coap_memory_init(void) {}
  */
 COAP_STATIC_INLINE void *coap_malloc(size_t size) {
   LWIP_ASSERT("coap_malloc must not be used in lwIP", 0);
+  return NULL;
 }
 
 COAP_STATIC_INLINE void coap_free(void *pointer) {
