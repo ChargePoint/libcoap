@@ -1489,7 +1489,7 @@ coap_dtls_receive(coap_session_t *c_session,
     }
     ret = gnutls_record_recv(g_env->g_session, pdu, (int)sizeof(pdu));
     if (ret > 0) {
-      return coap_handle_dgram(c_session->context, c_session, pdu, (size_t)ret);
+      return coap_handle_dgram(c_session->context, c_session, pdu, (size_t)ret, NULL);
     }
     else if (ret == 0) {
       c_session->dtls_event = COAP_EVENT_DTLS_CLOSED;

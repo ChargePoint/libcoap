@@ -636,7 +636,7 @@ void coap_io_do_events(coap_context_t *ctx, struct epoll_event* events,
  * @return       @c 0 if message was handled successfully, or less than zero on
  *               error.
  */
-int coap_handle_dgram(coap_context_t *ctx, coap_session_t *session, uint8_t *data, size_t data_len);
+int coap_handle_dgram(coap_context_t *ctx, coap_session_t *session, uint8_t *data, size_t data_len, coap_address_t* addr);
 
 /**
  * Invokes the event handler of @p context for the given @p event and

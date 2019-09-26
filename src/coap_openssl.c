@@ -1976,7 +1976,7 @@ int coap_dtls_receive(coap_session_t *session,
   session->dtls_event = -1;
   r = SSL_read(ssl, pdu, (int)sizeof(pdu));
   if (r > 0) {
-    return coap_handle_dgram(session->context, session, pdu, (size_t)r);
+      return coap_handle_dgram(session->context, session, pdu, (size_t)r, NULL);
   } else {
     int err = SSL_get_error(ssl, r);
     if (err == SSL_ERROR_WANT_READ || err == SSL_ERROR_WANT_WRITE) {
