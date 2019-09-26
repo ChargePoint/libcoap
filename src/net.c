@@ -1125,7 +1125,7 @@ coap_handle_dgram_for_proto(coap_context_t *ctx, coap_session_t *session, coap_p
     else if (session->tls)
       result = coap_dtls_receive(session, data, data_len);
   } else if (session->proto == COAP_PROTO_UDP) {
-    result = coap_handle_dgram(ctx, session, data, data_len);
+    result = coap_handle_dgram(ctx, session, data, data_len, &packet->addr_info.remote);
   }
   return result;
 }
@@ -1221,6 +1221,7 @@ coap_read_session(coap_context_t *ctx, coap_session_t *session, coap_tick_t now)
   if (COAP_PROTO_NOT_RELIABLE(session->proto)) {
     ssize_t bytes_read;
     memcpy(&packet->addr_info, &session->addr_info, sizeof(packet->addr_info));
+
     bytes_read = ctx->network_read(&session->sock, packet);
 
     if (bytes_read < 0) {
@@ -1543,7 +1544,7 @@ coap_io_do_events(coap_context_t *ctx, struct epoll_event *events, size_t nevent
 
 int
 coap_handle_dgram(coap_context_t *ctx, coap_session_t *session,
-  uint8_t *msg, size_t msg_len) {
+                  uint8_t *msg, size_t msg_len, coap_address_t* addr) {
 
   coap_pdu_t *pdu = NULL;
 
@@ -1552,6 +1553,9 @@ coap_handle_dgram(coap_context_t *ctx, coap_session_t *session,
   pdu = coap_pdu_init(0, 0, 0, msg_len - 4);
   if (!pdu)
     goto error;
+
+  coap_address_init(&pdu->addr);
+  if (addr) pdu->addr = *addr;
 
   if (!coap_pdu_parse(session->proto, msg, msg_len, pdu)) {
     coap_log(LOG_WARNING, "discard malformed PDU\n");
